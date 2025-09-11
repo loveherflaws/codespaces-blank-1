@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>FF</title>
+
+		<link rel="shortcut icon" content="favicon.webp" />
+
+		<link rel="stylesheet" href="index.css" />
+		<script src="/scram/scramjet.all.js"></script>
+		<script src="baremux/index.js" defer></script>
+		<script src="epoxy/index.js" defer></script>
+		<script src="register-sw.js" defer></script>
+		<script src="search.js" defer></script>
+		<script src="index.js" defer></script>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				margin: 0;
+				height: 100vh;
+			}
+			.center-text {
+				text-align: center;
+				margin: 0 auto;
+				width: 100%;
+			}
+			.header-bar {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				background: #222;
+				padding: 1rem;
+				z-index: 2;
+				position: relative;
+			}
+			.header-bar a {
+				color: white;
+				text-decoration: none;
+				font-weight: bold;
+				font-size: 1.2rem;
+			}
+			.header-bar a:hover {
+				text-decoration: underline;
+			}
+			.content-wrapper {
+				flex: 1;
+				overflow: auto;
+				position: relative;
+				display: flex;
+				flex-direction: column;
+			}
+			#sj-frame {
+				flex: 1;
+				display: none;
+				width: 100%;
+				border: none;
+				z-index: 1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Header Bar -->
+		<nav class="header-bar">
+			<a href="#">G</a>
+			<a href="#">A</a>
+			<a href="#">B</a>
+			<a href="#">C</a>
+		</nav>
+
+		<div class="content-wrapper">
+			<div
+				title="Scramjet Logo"
+				class="flex-center logo-wrapper header-center"
+			>
+				<img class="logo" src="sj.png" alt="Scramjet" />
+				<h1>Fortnite Fajita</h1>
+			</div>
+			<div class="flex-center desc center-text">
+				<p>
+					ts is on like version 67
+				</p>
+			</div>
+
+			<form id="sj-form" class="flex-center">
+				<input
+					id="sj-search-engine"
+					value="https://www.google.com/search?q=%s"
+					type="hidden"
+				/>
+				<input id="sj-address" type="text" placeholder="Search the web freely" />
+			</form>
+			<div class="desc left-margin">
+				<p id="sj-error"></p>
+				<pre id="sj-error-code"></pre>
+			</div>
+			<footer>
+				<div>
+					<span>Powered by Scramjet &copy; MW 2025</span>
+				</div>
+			</footer>
+			<iframe id="sj-frame"></iframe>
+		</div>
+
+		<script>
+			function go(url) {
+				const iframe = document.getElementById("sj-frame");
+				iframe.style.display = "block";
+				iframe.src = url;
+			}
+
+			document.getElementById("sj-form").addEventListener("submit", function (e) {
+				e.preventDefault();
+				const input = document.getElementById("sj-address").value.trim();
+				let url = input;
+
+				// If it looks like a URL, prefix with http if missing
+				if (/^(https?:\/\/)/i.test(input) === false && input.includes(".")) {
+					url = "http://" + input;
+				} else if (!input.includes(".")) {
+					// Treat it as a search query
+					const searchEngine = document.getElementById("sj-search-engine").value;
+					url = searchEngine.replace("%s", encodeURIComponent(input));
+				}
+
+				go(url);
+			});
+
+			// Keep the original popup logic only for when the page is loaded directly
+			(function () {
+				if (window.top === window.self && !window.opener) {
+					const popup = window.open("about:blank", "_blank", "width=1517,height=852");
+					if (popup) {
+						const doc = popup.document;
+						doc.write(`<!doctype html>
+							<html>
+								<head>
+									<title>About:Blank</title>
+									<style>
+										html, body {
+											margin: 0;
+											padding: 0;
+											width: 100%;
+											height: 100%;
+											overflow: hidden;
+										}
+										iframe {
+											border: none;
+											width: 100%;
+											height: 100%;
+										}
+									</style>
+								</head>
+								<body>
+									<iframe src="${location.href}"></iframe>
+								</body>
+							</html>`);
+						doc.close();
+						window.close();
+					}
+				}
+			})();
+		</script>
+	</body>
+</html>

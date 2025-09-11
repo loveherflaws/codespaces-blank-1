@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Snake Game",
+    "link": "well what about now",
+    "image": "/images/snake.jpg"
+  },
+  {
+    "name": "Tetris",
+    "link": "/",
+    "image": "/images/tetris.jpg"
+  },
+  {
+    "name": "Pac-Man",
+    "link": "https://www.google.com/fbx?fbx=pac_man",
+    "image": "/images/pacman.jpg"
+  },
+  {
+    "name": "2048",
+    "link": "https://play2048.co/",
+    "image": "/images/2048.jpg"
+  },
+  {
+    "name": "Flappy Bird",
+    "link": "https://flappybird.io/",
+    "image": "/images/flappybird.jpg"
+  },
+  {
+    "name": "Minecraft Classic",
+    "link": "https://classic.minecraft.net/",
+    "image": "/images/minecraft.jpg"
+  },
+  {
+    "name": "Solitaire",
+    "link": "https://solitaired.com/",
+    "image": "/images/solitaire.jpg"
+  },
+  {
+    "name": "Chess",
+    "link": "https://www.chess.com/play/computer",
+    "image": "/images/chess.jpg"
+  },
+  {
+    "name": "Sudoku",
+    "link": "https://sudoku.com/",
+    "image": "/images/sudoku.jpg"
+  },
+  {
+    "name": "Crossword",
+    "link": "https://www.washingtonpost.com/crossword-puzzles/daily/",
+    "image": "/images/crossword.jpg"
+  }
+]

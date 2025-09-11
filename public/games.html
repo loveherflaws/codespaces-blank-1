@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		/>
+		<title>FF Games</title>
+
+		<link rel="shortcut icon" content="favicon.webp" />
+
+		<link rel="stylesheet" href="index.css" />
+		<script src="/scram/scramjet.all.js"></script>
+		<script src="baremux/index.js" defer></script>
+		<script src="epoxy/index.js" defer></script>
+		<script src="register-sw.js" defer></script>
+		<script src="search.js" defer></script>
+		<script src="index.js" defer></script>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				margin: 0;
+				height: 100vh;
+			}
+			.center-text {
+				text-align: center;
+				margin: 0 auto;
+				width: 100%;
+			}
+			.header-bar {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				background: #222;
+				padding: 1rem;
+				z-index: 2;
+				position: relative;
+			}
+			.header-bar a {
+				color: white;
+				text-decoration: none;
+				font-weight: bold;
+				font-size: 1.2rem;
+			}
+			.header-bar a:hover {
+				text-decoration: underline;
+			}
+			.content-wrapper {
+				flex: 1;
+				overflow: auto;
+				position: relative;
+				display: flex;
+				flex-direction: column;
+			}
+			#sj-frame {
+				flex: 1;
+				display: none;
+				width: 100%;
+				border: none;
+				z-index: 1;
+			}
+			/* Added game grid styles */
+			.games-container {
+				padding: 2rem;
+				max-width: 1200px;
+				margin: 0 auto;
+				width: 100%;
+			}
+			.games-grid {
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 1.5rem;
+				margin-top: 2rem;
+			}
+			.game-card {
+				background: #333;
+				border-radius: 8px;
+				padding: 1rem;
+				text-align: center;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+				color: white;
+			}
+			.game-card:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+			}
+			.game-card img {
+				width: 100%;
+				height: 120px;
+				object-fit: cover;
+				border-radius: 4px;
+				margin-bottom: 0.5rem;
+			}
+			.game-card h3 {
+				margin: 0;
+				font-size: 1rem;
+				font-weight: bold;
+			}
+			@media (max-width: 1024px) {
+				.games-grid {
+					grid-template-columns: repeat(4, 1fr);
+				}
+			}
+			@media (max-width: 768px) {
+				.games-grid {
+					grid-template-columns: repeat(3, 1fr);
+				}
+			}
+			@media (max-width: 480px) {
+				.games-grid {
+					grid-template-columns: repeat(2, 1fr);
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Header Bar -->
+		<nav class="header-bar">
+			<a href="#" onclick="showGames()">G</a>
+			<a href="#" onclick="showGames()">A</a>
+			<a href="#" onclick="showGames()">B</a>
+			<a href="#" onclick="showGames()">C</a>
+		</nav>
+
+		<div class="content-wrapper">
+			<div id="games-view">
+				<div
+					title="Scramjet Logo"
+					class="flex-center logo-wrapper header-center"
+				>
+					<img class="logo" src="sj.png" alt="Scramjet" />
+					<h1>Fortnite Fajita Games</h1>
+				</div>
+				<div class="flex-center desc center-text">
+					<p>
+						Choose your game and play freely
+					</p>
+				</div>
+
+				<!-- Replaced form with games container -->
+				<div class="games-container">
+					<div id="games-grid" class="games-grid">
+						<!-- Games will be loaded here dynamically -->
+					</div>
+				</div>
+
+				<footer>
+					<div>
+						<span>Powered by Scramjet &copy; MW 2025</span>
+					</div>
+				</footer>
+			</div>
+			<iframe id="sj-frame"></iframe>
+		</div>
+
+		<script>
+			function go(url) {
+				const iframe = document.getElementById("sj-frame");
+				const gamesView = document.getElementById("games-view");
+				iframe.style.display = "block";
+				gamesView.style.display = "none";
+				iframe.src = url;
+			}
+
+			function showGames() {
+				const iframe = document.getElementById("sj-frame");
+				const gamesView = document.getElementById("games-view");
+				iframe.style.display = "none";
+				gamesView.style.display = "block";
+			}
+
+			function playGame(gameLink) {
+				const input = gameLink.trim();
+				let url = input;
+
+				// If it looks like a URL, prefix with http if missing
+				if (/^(https?:\/\/)/i.test(input) === false && input.includes(".")) {
+					url = "http://" + input;
+				} else if (!input.includes(".")) {
+					// Treat it as a search query
+					const searchEngine = "https://www.google.com/search?q=%s";
+					url = searchEngine.replace("%s", encodeURIComponent(input));
+				}
+
+				go(url);
+			}
+
+			async function loadGames() {
+				try {
+					const response = await fetch('games.json');
+					const games = await response.json();
+					const gamesGrid = document.getElementById('games-grid');
+					
+					gamesGrid.innerHTML = '';
+					
+					games.forEach(game => {
+						const gameCard = document.createElement('div');
+						gameCard.className = 'game-card';
+						gameCard.onclick = () => playGame(game.link);
+						
+						gameCard.innerHTML = `
+							<img src="${game.image}" alt="${game.name}" onerror="this.src='/placeholder.svg?height=120&width=200'">
+							<h3>${game.name}</h3>
+						`;
+						
+						gamesGrid.appendChild(gameCard);
+					});
+				} catch (error) {
+					console.error('Error loading games:', error);
+					document.getElementById('games-grid').innerHTML = '<p style="color: white; text-align: center; grid-column: 1 / -1;">Error loading games. Please try again later.</p>';
+				}
+			}
+
+			// Load games when page loads
+			document.addEventListener('DOMContentLoaded', loadGames);
+
+			// Keep the original popup logic only for when the page is loaded directly
+			(function () {
+				if (window.top === window.self && !window.opener) {
+					const popup = window.open("about:blank", "_blank", "width=1517,height=852");
+					if (popup) {
+						const doc = popup.document;
+						doc.write(`<!doctype html>
+							<html>
+								<head>
+									<title>About:Blank</title>
+									<style>
+										html, body {
+											margin: 0;
+											padding: 0;
+											width: 100%;
+											height: 100%;
+											overflow: hidden;
+										}
+										iframe {
+											border: none;
+											width: 100%;
+											height: 100%;
+										}
+									</style>
+								</head>
+								<body>
+									<iframe src="${location.href}"></iframe>
+								</body>
+							</html>`);
+						doc.close();
+						window.close();
+					}
+				}
+			})();
+		</script>
+	</body>
+</html>

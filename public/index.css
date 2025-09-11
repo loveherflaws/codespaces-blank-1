@@ -1,0 +1,173 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap");
+
+body {
+	font-family: "Roboto", Arial, Helvetica, sans-serif;
+	margin: 0;
+	background: linear-gradient(180deg, #111 0%, #1a1a1a 100%);
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	color: #eaeaea;
+}
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.header-center {
+	flex-direction: column;
+	margin-top: 8%;
+	text-align: center;
+}
+
+.left-margin {
+	margin: 0px 16px;
+}
+
+#sj-frame {
+	border: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: #111;
+}
+
+#sj-error {
+	color: #ff6666 !important;
+	white-space: pre-wrap;
+}
+
+#sj-error-code {
+	font-size: 12px;
+	color: #fff;
+	font-family: "Courier New", Courier, monospace;
+}
+
+.logo {
+	height: 20vh;
+	max-width: 200px;
+	transition: transform 0.3s ease;
+}
+
+.logo:hover {
+	transform: scale(1.05);
+}
+
+.logo-wrapper h1 {
+	color: #fff;
+	font-size: 2.8rem;
+	margin-top: 20px;
+	font-weight: 500;
+	letter-spacing: 1px;
+}
+
+footer {
+	margin: 0 16px;
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	line-height: 30px;
+	margin-bottom: 20px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	padding-top: 15px;
+}
+
+footer > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+footer a,
+footer span {
+	margin: 0 10px;
+	text-decoration: none;
+	color: #aaa;
+	font-size: 14px;
+	transition: color 0.2s ease;
+}
+
+footer a:hover {
+	color: #fff;
+	text-decoration: underline;
+}
+
+.desc p {
+	max-width: 600px;
+	margin: 20px auto;
+	text-align: center;
+	font-size: 1.1rem;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+#sj-address {
+	background: rgba(255, 255, 255, 0.05);
+	font-family: inherit;
+	padding: 0px 17px;
+	height: 48px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: #fff;
+	border-radius: 25px;
+	outline: none;
+	width: 350px;
+	margin-top: 15px;
+	transition: border-color 0.2s ease, border-radius 0.2s ease;
+}
+
+#sj-address:focus {
+	border-color: rgba(255, 255, 255, 0.6);
+	border-radius: 8px;
+}
+
+.credit {
+	border-radius: 10px;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 15px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.credit label {
+	margin-left: auto;
+	margin-right: 15px;
+	cursor: pointer;
+	color: #ddd;
+}
+
+.credit a,
+.credit label {
+	text-decoration: underline;
+}
+
+.credit pre {
+	display: none;
+	width: 100%;
+	margin-top: 10px;
+	padding: 10px;
+	background: rgba(0, 0, 0, 0.4);
+	border-radius: 6px;
+	color: #fff;
+	font-size: 0.9rem;
+	line-height: 1.4;
+}
+
+.credit label::after {
+	content: "show license";
+}
+
+.credit input:checked + label::after {
+	content: "hide license";
+}
+
+.credit input:checked ~ pre {
+	display: block;
+}
