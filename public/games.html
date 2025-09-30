@@ -154,16 +154,18 @@
 					</div>
 				</footer>
 			</div>
-			<iframe id="sj-frame"></iframe>
+			<iframe id="sj-frame" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe>
 		</div>
 
 		<script>
+			// The go function receives a fully formed iframe URL, it shows the iframe and loads it.
 			function go(url) {
 				const iframe = document.getElementById("sj-frame");
 				const gamesView = document.getElementById("games-view");
 				iframe.style.display = "block";
 				gamesView.style.display = "none";
 				iframe.src = url;
+				console.info("iframe src set to:", url);
 			}
 
 			function showGames() {
@@ -173,20 +175,47 @@
 				gamesView.style.display = "block";
 			}
 
-			function playGame(gameLink) {
-				const input = gameLink.trim();
-				let url = input;
+			// Normalize input, then return a proxied path using encodeURIComponent.
+			function encodeForIframe(rawInput) {
+				let input = rawInput.trim();
 
-				// If it looks like a URL, prefix with http if missing
+				// If it looks like a host or domain without protocol, add http
 				if (/^(https?:\/\/)/i.test(input) === false && input.includes(".")) {
-					url = "http://" + input;
+					input = "http://" + input;
 				} else if (!input.includes(".")) {
-					// Treat it as a search query
+					// Treat as search query, use google by default
 					const searchEngine = "https://www.google.com/search?q=%s";
-					url = searchEngine.replace("%s", encodeURIComponent(input));
+					input = searchEngine.replace("%s", encodeURIComponent(input));
 				}
 
-				go(url);
+				// encodeURIComponent is used so the proxy receives a safe encoded URL
+				const encoded = encodeURIComponent(input);
+
+				// DEFAULT PROXY PATH, change to the route your proxy expects
+				// Examples:
+				//  - If your proxy expects /r/<encoded>, keep '/r/'
+				//  - If it expects /proxy?u=<encoded>, set PROXY_PATH = '/proxy?u='
+				const PROXY_PATH = '/scramjet/';
+
+				return PROXY_PATH + encoded;
+			}
+
+			function playGame(gameLink) {
+				try {
+					const proxied = encodeForIframe(gameLink);
+					go(proxied);
+				} catch (err) {
+					console.error("Encoding failed, falling back to direct open:", err);
+					// fallback, open the normalized raw URL directly
+					let fallback = gameLink.trim();
+					if (/^(https?:\/\/)/i.test(fallback) === false && fallback.includes(".")) {
+						fallback = "http://" + fallback;
+					} else if (!fallback.includes(".")) {
+						const searchEngine = "https://www.google.com/search?q=%s";
+						fallback = searchEngine.replace("%s", encodeURIComponent(fallback));
+					}
+					go(fallback);
+				}
 			}
 
 			async function loadGames() {
@@ -194,19 +223,19 @@
 					const response = await fetch('games.json');
 					const games = await response.json();
 					const gamesGrid = document.getElementById('games-grid');
-					
+
 					gamesGrid.innerHTML = '';
-					
+
 					games.forEach(game => {
 						const gameCard = document.createElement('div');
 						gameCard.className = 'game-card';
 						gameCard.onclick = () => playGame(game.link);
-						
+
 						gameCard.innerHTML = `
 							<img src="${game.image}" alt="${game.name}" onerror="this.src='/placeholder.svg?height=120&width=200'">
 							<h3>${game.name}</h3>
 						`;
-						
+
 						gamesGrid.appendChild(gameCard);
 					});
 				} catch (error) {
